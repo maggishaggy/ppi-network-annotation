@@ -21,7 +21,7 @@ There are 4 files which are necessary to run this program:
 
 1. A protein-protein interaction network in the format of:
 
-    **EntrezID** **EntrezID** **CONFIDENCE**
+    **Entrez ID** **Entrez ID** **Confidence score**
     
     Such as:
     
@@ -38,11 +38,13 @@ There are 4 files which are necessary to run this program:
     5058 2064 0.73
     
     1742 2064 0.87
-    
+
+
     An example of such a network can be found [here](http://cbdm-01.zdv.uni-mainz.de/~mschaefer/hippie/download.php)
 
 
 2. An experiment file, in Excel format. Rows show individual entries, columns are the values of the following properties:
+
     - **Log2 fold change**
     - **Adjusted p value**
     - **Entrez id**
