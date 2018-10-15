@@ -2,14 +2,7 @@ Annotated PPI Network
 ===================
 OVERVIEW
 --------
-
-HARDWARE REQUIREMENTS
----------------------
-The hardware requirements to run the program are:
-
-1. At least 8GB of RAM
-
-2. At least 4 cores in the CPU are recommended
+Library for annotating a PPI network using differentially expressed gene information
 
 SOFTWARE REQUIREMENTS
 ---------------------
@@ -60,9 +53,6 @@ There are 4 files which are necessary to run this program:
 
     The file may contain other columns too, but the indices and names of the above columns must be entered to the configuration file.
 
-
-3. A configuration file. The path to the file is input at the beginning of the program. Details
-can be found under README_CONFIGURATION.md
 
 HOW TO RUN
 ----------
