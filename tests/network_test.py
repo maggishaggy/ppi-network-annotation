@@ -4,8 +4,8 @@
 
 import unittest
 
-from annotated_ppi_network.model.gene import Gene
-from annotated_ppi_network.model.network import Network
+from ppi_network_annotation.model.gene import Gene
+from ppi_network_annotation.model.network import Network
 from igraph import Graph
 import numpy as np
 

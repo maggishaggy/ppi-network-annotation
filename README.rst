@@ -1,8 +1,9 @@
-Annotated PPI Network
+PPI Network Annotation
 ===================
 OVERVIEW
 --------
-Library for annotating a PPI network using differentially expressed gene information
+Library for annotating a protein-protein interaction network using differentially expressed gene
+information
 
 SOFTWARE REQUIREMENTS
 ---------------------
@@ -21,7 +22,6 @@ There are 4 files which are necessary to run this program:
 1. A protein-protein interaction network in the format of:
 
     **EntrezID** **EntrezID** **CONFIDENCE**
-    
     
     Such as:
     
@@ -43,9 +43,9 @@ There are 4 files which are necessary to run this program:
 
 
 2. An experiment file, in Excel format. Rows show individual entries, columns are the values of the following properties:
-	- **Log2 fold change**
-	- **Adjusted p value**
-	- **Entrez id**
+    - **Log2 fold change**
+    - **Adjusted p value**
+    - **Entrez id**
 
     The file may contain other columns too, but the indices and names of the above columns must
     be entered as parameters

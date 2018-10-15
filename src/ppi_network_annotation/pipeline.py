@@ -7,8 +7,8 @@ import logging
 import os
 from typing import Optional
 
-from annotated_ppi_network import parsers
-from annotated_ppi_network.model.network import Network
+from ppi_network_annotation import parsers
+from ppi_network_annotation.model.network import Network
 
 __all__ = [
     'generate_ppi_network'

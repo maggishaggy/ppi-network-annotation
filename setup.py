@@ -11,7 +11,7 @@ import setuptools
 #################################################################
 
 PACKAGES = setuptools.find_packages(where='src')
-META_PATH = os.path.join('src', 'annotated_ppi_network', '__init__.py')
+META_PATH = os.path.join('src', 'ppi_network_annotation', '__init__.py')
 KEYWORDS = ['Protein-Protein Interaction Network', 'Networks Biology',
             'Annotated Protein-Protein Interaction Network', 'Differential Gene Expression']
 CLASSIFIERS = [
@@ -44,7 +44,7 @@ TESTS_REQUIRE = [
 ]
 ENTRY_POINTS = {
     'console_scripts': [
-        'annotated_ppi_network = annotated_ppi_network.cli:main',
+        # 'ppi_network_annotation = ppi_network_annotation.cli:main',
     ]
 }
 DEPENDENCY_LINKS = [
@@ -52,10 +52,7 @@ DEPENDENCY_LINKS = [
 ]
 
 PACKAGE_DATA = {
-    '': [
-        '*.r',
-        '*.R'
-    ]
+    '': []
 }
 
 #################################################################

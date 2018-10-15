@@ -9,7 +9,7 @@ from typing import Iterable, List, Tuple
 
 import igraph
 import pandas as pd
-from annotated_ppi_network.model.gene import Gene
+from ppi_network_annotation.model.gene import Gene
 from igraph import Graph
 
 logger = logging.getLogger(__name__)
