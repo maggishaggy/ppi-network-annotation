@@ -43,15 +43,12 @@ There are 4 files which are necessary to run this program:
 
 
 2. An experiment file, in Excel format. Rows show individual entries, columns are the values of the following properties:
-	- **Base mean**
-	- **Log fold change**
-	- **Statistic**
+	- **Log2 fold change**
 	- **Adjusted p value**
-	- **Ensembl id**
-	- **Gene symbol**
 	- **Entrez id**
 
-    The file may contain other columns too, but the indices and names of the above columns must be entered to the configuration file.
+    The file may contain other columns too, but the indices and names of the above columns must
+    be entered as parameters
 
 
 HOW TO RUN
