@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class Network:
     """Encapsulate a PPI network with differential gene expression and disease association annotation."""
 
-    def __init__(self, ppi_graph: Graph, max_adj_p, max_l2fc, min_l2fc):
+    def __init__(self, ppi_graph: Graph, max_adj_p: float, max_l2fc: float, min_l2fc: float):
         """Initialize the network object
 
         :param ppi_graph: A graph of protein interactions.
@@ -27,10 +27,14 @@ class Network:
         self.max_adj_p = max_adj_p
         self.max_l2fc = max_l2fc
         self.min_l2fc = min_l2fc
-        self.graph = ppi_graph.copy()  # create deep copy of the graph graph
+        self.graph = ppi_graph.copy()  # create deep copy of the graph
 
-    def set_up_network(self, genes: List, gene_filter: bool = False,
-                       disease_associations: Optional[Dict] = None):
+    def set_up_network(
+            self,
+            genes: List,
+            gene_filter: bool = False,
+            disease_associations: Optional[Dict] = None
+    ) -> None:
         """Set up the network.
 
          Filter genes out if requested and add attributes to the vertices.
@@ -146,7 +150,7 @@ class Network:
         logger.info("Number of nodes: {}".format(len(self.graph.vs)))
         logger.info("Number of edges: {}".format(len(self.graph.es)))
 
-    def _get_differentially_expressed_genes(self, diff_type):
+    def get_differentially_expressed_genes(self, diff_type):
         """Get the differentially expressed genes based on diff_type.
 
         :param str diff_type: Differential expression type chosen by the user; all, down, or up.
@@ -169,50 +173,6 @@ class Network:
 
     def get_adjlist(self) -> List[List[int]]:
         return self.graph.get_adjlist()
-
-    def get_disease_mappings(self, att_ind_start):
-        """Get a dictionary of enumerations for diseases.
-
-        :param int att_ind_start: Starting index for enumeration.
-        :return: Dictionary of disease, number pairs.
-        """
-        all_disease_ids = self.get_all_unique_diseases()
-        disease_enum = enumerate(all_disease_ids, start=att_ind_start)
-        disease_mappings = {}
-        for num, dis in disease_enum:
-            disease_mappings[dis] = num
-        return disease_mappings
-
-    def get_all_unique_diseases(self):
-        """Get all unique diseases that are known to the network.
-
-        :return: All unique disease identifiers.
-        """
-        all_disease_ids = self.graph.vs["associated_diseases"]
-        # remove None values from list
-        all_disease_ids = [lst for lst in all_disease_ids if lst is not None]
-        # flatten list of lists, get unique elements
-        all_disease_ids = list(set([id for sublist in all_disease_ids for id in sublist]))
-        return all_disease_ids
-
-    def write_index_labels(self, targets, output_path):
-        """ Write the mappings between vertex indices and labels(target vs. not) to a file.
-
-        :param list targets: List of known targets.
-        :param str output_path: Path to the output file.
-        """
-        label_mappings = self.get_index_labels(targets)
-
-        with open(output_path, "w") as file:
-            for k, v in label_mappings.items():
-                print(k, v, sep='\t', file=file)
-
-    def get_index_labels(self, targets):
-        target_ind = self.graph.vs.select(name_in=targets).indices
-        rest_ind = self.graph.vs.select(name_notin=targets).indices
-        label_mappings = {i: 1 for i in target_ind}
-        label_mappings.update({i: 0 for i in rest_ind})
-        return label_mappings
 
     def get_attribute_from_indices(self, indices: list, attribute_name: str):
         return list(np.array(self.graph.vs[attribute_name])[indices])
