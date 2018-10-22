@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class NeighborhoodNetwork:
+    """Mimic encapsulation of a neighborhood network.s"""
     def __init__(self, network: Network):
         """Initialize the network object
 
@@ -15,7 +16,7 @@ class NeighborhoodNetwork:
 
         self.graph = network.graph
 
-    def get_neighborhood_graph(self, node_name: str, order: int = 1) -> Graph:
+    def get_neighborhood_network(self, node_name: str, order: int = 1) -> Graph:
         """Get the neighborhood graph of a node.
 
         :param str node_name: Node whose neighborhood graph is requested.

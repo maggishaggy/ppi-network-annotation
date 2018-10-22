@@ -4,7 +4,7 @@
 
 
 class Gene:
-    """Encapsulates a gene and its attributes."""
+    """Encapsulate a gene and its attributes."""
 
     def __init__(self,
                  entrez_id: str,

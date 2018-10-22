@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class AttributeNetwork:
+    """Mimic encapsulation of a bipartite attribute network"""
     def __init__(self, network: Network):
         """Initialize the network object
 
