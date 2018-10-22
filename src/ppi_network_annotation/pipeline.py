@@ -83,9 +83,9 @@ def generate_ppi_network(
     # Build an undirected weighted graph with the remaining interactions based on Entrez gene IDs
     network = Network(
         protein_interactions,
-        maximum_adjusted_p_value=maximum_adjusted_p_value,
-        maximum_log2_fold_change=maximum_log2_fold_change,
-        minimum_log2_fold_change=minimum_log2_fold_change,
+        max_adj_p=maximum_adjusted_p_value,
+        max_l2fc=maximum_log2_fold_change,
+        min_l2fc=minimum_log2_fold_change,
     )
     network.set_up_network(gene_list, disease_associations=disease_associations)
 

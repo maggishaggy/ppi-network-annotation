@@ -4,6 +4,7 @@
 
 import unittest
 
+from ppi_network_annotation.model.filtered_network import FilteredNetwork
 from ppi_network_annotation.model.gene import Gene
 from ppi_network_annotation.model.network import Network
 from igraph import Graph
@@ -46,9 +47,9 @@ class NetworkTest(unittest.TestCase):
             [(0, 0), (0, 1), (0, 3), (1, 2), (1, 3), (2, 6), (3, 4), (4, 4),
              (4, 5)])
         self.mapped_network.vs["name"] = self.symbols
-        self.mapped_network.vs["log2_fold_change"] = self.l2fcs
+        self.mapped_network.vs["l2fc"] = self.l2fcs
         self.mapped_network.vs["padj"] = self.padjs
-        self.mapped_network.vs["is_diff_expressed"] = self.diff_expressed
+        self.mapped_network.vs["diff_expressed"] = self.diff_expressed
         self.mapped_network.vs["up_regulated"] = self.up_regulated
         self.mapped_network.vs["down_regulated"] = self.down_regulated
         self.mapped_network.es["weight"] = [0.9, 0.9, 0.7, 0.7, 0.9, 0.7, 0.9,
@@ -64,9 +65,9 @@ class NetworkTest(unittest.TestCase):
         """Test the constructor and set_up methods."""
         print("+test_init")
         n = Network(self.interact_network,
-                    maximum_adjusted_p_value=0.05,
-                    maximum_log2_fold_change=-1,
-                    minimum_log2_fold_change=1
+                    max_adj_p=0.05,
+                    max_l2fc=-1,
+                    min_l2fc=1
                     )
         n.set_up_network(self.protein_list, gene_filter=True)
         self.__check_for_graph_eq(n.graph, self.mapped_network)
@@ -79,13 +80,14 @@ class NetworkTest(unittest.TestCase):
         de_up.delete_vertices(de_up.vs.select(_degree_eq=0))
 
         n = Network(self.interact_network,
-                    maximum_adjusted_p_value=0.05,
-                    maximum_log2_fold_change=-1,
-                    minimum_log2_fold_change=1
+                    max_adj_p=0.05,
+                    max_l2fc=-1,
+                    min_l2fc=1
                     )
         n.set_up_network(self.protein_list)
 
-        de_up_to_test = n.get_upregulated_genes_network()
+        fn = FilteredNetwork(n)
+        de_up_to_test = fn.get_upregulated_genes_network()
         self.__check_for_graph_eq(de_up, de_up_to_test)
 
     def test_get_downregulated_genes_network(self):
@@ -96,13 +98,14 @@ class NetworkTest(unittest.TestCase):
         de_down.delete_vertices(de_down.vs.select(_degree_eq=0))
 
         n = Network(self.interact_network,
-                    maximum_adjusted_p_value=0.05,
-                    maximum_log2_fold_change=-1,
-                    minimum_log2_fold_change=1
+                    max_adj_p=0.05,
+                    max_l2fc=-1,
+                    min_l2fc=1
                     )
         n.set_up_network(self.protein_list)
 
-        de_down_to_test = n.get_downregulated_genes_network()
+        fn = FilteredNetwork(n)
+        de_down_to_test = fn.get_downregulated_genes_network()
         self.__check_for_graph_eq(de_down, de_down_to_test)
 
     def test_get_shortest_paths_graph(self):
@@ -119,13 +122,14 @@ class NetworkTest(unittest.TestCase):
         shortest_path_graph.es['weight'] = weights
 
         n = Network(self.interact_network,
-                    maximum_adjusted_p_value=0.05,
-                    maximum_log2_fold_change=-1,
-                    minimum_log2_fold_change=1
+                    max_adj_p=0.05,
+                    max_l2fc=-1,
+                    min_l2fc=1
                     )
         n.set_up_network(self.protein_list)
 
-        shortest_path_graph_to_test = n.get_shortest_paths_graph()
+        fn = FilteredNetwork(n)
+        shortest_path_graph_to_test = fn.get_shortest_paths_graph()
 
         self.__check_for_graph_eq(shortest_path_graph,
                                   shortest_path_graph_to_test)
@@ -133,9 +137,9 @@ class NetworkTest(unittest.TestCase):
     def __check_for_graph_eq(self, g1, g2):
         """Check if two graphs are the same."""
         self.assertEqual(g1.vs["name"], g2.vs["name"])
-        self.assertEqual(g1.vs["log2_fold_change"], g2.vs["log2_fold_change"])
+        self.assertEqual(g1.vs["l2fc"], g2.vs["l2fc"])
         self.assertEqual(g1.vs["padj"], g2.vs["padj"])
-        self.assertEqual(g1.vs["is_diff_expressed"], g2.vs["is_diff_expressed"])
+        self.assertEqual(g1.vs["diff_expressed"], g2.vs["diff_expressed"])
         self.assertEqual(g1.vs["up_regulated"], g2.vs["up_regulated"])
         self.assertEqual(g1.vs["down_regulated"], g2.vs["down_regulated"])
 
@@ -145,9 +149,9 @@ class NetworkTest(unittest.TestCase):
             print("{} <-> {}".format(e1.source, e1.target))
             for e2 in g2.es:
                 if (
-                                    e1.source == e2.source and
-                                    e1.target == e2.target and
-                                e1["weight"] == e2["weight"]
+                        e1.source == e2.source and
+                        e1.target == e2.target and
+                        e1["weight"] == e2["weight"]
                 ):
                     has_match = True
             self.assertEqual(has_match, True)
@@ -158,18 +162,18 @@ class NetworkTest(unittest.TestCase):
             print("{} <-> {}".format(e1.source, e1.target))
             for e2 in g1.es:
                 if (
-                                    e1.source == e2.source and
-                                    e1.target == e2.target and
-                                e1["weight"] == e2["weight"]
+                        e1.source == e2.source and
+                        e1.target == e2.target and
+                        e1["weight"] == e2["weight"]
                 ):
                     has_match = True
             self.assertEqual(has_match, True)
 
     def test_get_second_degree_neighbors(self):
         n = Network(self.interact_network,
-                    maximum_adjusted_p_value=0.05,
-                    maximum_log2_fold_change=-1,
-                    minimum_log2_fold_change=1
+                    max_adj_p=0.05,
+                    max_l2fc=-1,
+                    min_l2fc=1
                     )
         n.set_up_network(self.protein_list, gene_filter=True)
         # neighbors = n.get_second_degree_neighbors(self.mapped_network.vs[0])
