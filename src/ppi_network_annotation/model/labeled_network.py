@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 
 class LabeledNetwork:
-    """Mimic encapsulation of a labeled and annotated PPI network"""
+    """Mimic encapsulation of a labeled and annotated PPI network for Gat2Vec."""
 
     def __init__(self, network: Network):
         """Initialize the network object
