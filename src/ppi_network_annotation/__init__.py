@@ -1,7 +1,7 @@
 """Library for annotating a protein protein interaction network with differential gene 
 expression."""
 
-__version__ = '0.0.1-dev'
+__version__ = '0.0.2-dev'
 
 __title__ = 'ppi_network_annotation'
 __description__ = 'Library for annotating a protein protein interaction network with differential ' \
