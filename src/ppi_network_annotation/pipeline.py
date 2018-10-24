@@ -1,22 +1,16 @@
-#!/usr/bin/env python3
-
-"""
-"""
+# -*- coding: utf-8 -*-
 
 import logging
-import os
 from typing import Optional
 
 from ppi_network_annotation import parsers
-from ppi_network_annotation.model.network import Network
+from ppi_network_annotation.model import Network
 
 __all__ = [
-    'generate_ppi_network'
+    'generate_ppi_network',
 ]
 
 logger = logging.getLogger(__name__)
-
-HERE = os.path.abspath(os.path.dirname(__file__))
 
 
 def generate_ppi_network(
