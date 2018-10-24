@@ -21,16 +21,16 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 
 def generate_ppi_network(
         ppi_graph_path: str,
-        gene_expression_file_path: str,
+        dge_path: str,
         entrez_id_header: str,
-        log_fold_change_header: str,
-        adjusted_p_value_header: str,
-        split_char: str,
-        maximum_adjusted_p_value: float,
-        maximum_log2_fold_change: float,
-        minimum_log2_fold_change: float,
+        log2_fold_change_header: str,
+        adj_p_header: str,
+        entrez_delimiter: str,
+        max_adj_p: float,
+        max_log2_fold_change: float,
+        min_log2_fold_change: float,
         base_mean_header: Optional[str] = None,
-        hippie_min_edge_weight: Optional[float] = None,
+        ppi_edge_min_confidence: Optional[float] = None,
         current_disease_ids_path: Optional[str] = None,
         disease_associations_path: Optional[str] = None,
 ) -> Network:
@@ -39,39 +39,39 @@ def generate_ppi_network(
     :return Network: Protein-protein interaction network with information on differential expression.
     """
     # Compilation of a protein-protein interaction (PPI) graph (HIPPIE)
-    protein_interactions = parsers.parse_ppi_graph(ppi_graph_path, hippie_min_edge_weight)
+    protein_interactions = parsers.parse_ppi_graph(ppi_graph_path, ppi_edge_min_confidence)
     protein_interactions = protein_interactions.simplify()
 
-    if gene_expression_file_path.endswith('.xlsx'):
+    if dge_path.endswith('.xlsx'):
         gene_list = parsers.parse_excel(
-            gene_expression_file_path,
+            dge_path,
             entrez_id_header=entrez_id_header,
-            log_fold_change_header=log_fold_change_header,
-            adjusted_p_value_header=adjusted_p_value_header,
-            split_char=split_char,
+            log_fold_change_header=log2_fold_change_header,
+            adjusted_p_value_header=adj_p_header,
+            split_char=entrez_delimiter,
             base_mean_header=base_mean_header,
         )
-    elif gene_expression_file_path.endswith('.csv'):
+    elif dge_path.endswith('.csv'):
         gene_list = parsers.parse_csv(
-            gene_expression_file_path,
+            dge_path,
             entrez_id_header=entrez_id_header,
-            log_fold_change_header=log_fold_change_header,
-            adjusted_p_value_header=adjusted_p_value_header,
-            split_char=split_char,
+            log_fold_change_header=log2_fold_change_header,
+            adjusted_p_value_header=adj_p_header,
+            split_char=entrez_delimiter,
             base_mean_header=base_mean_header,
         )
-    elif gene_expression_file_path.endswith('.tsv'):
+    elif dge_path.endswith('.tsv'):
         gene_list = parsers.parse_csv(
-            gene_expression_file_path,
+            dge_path,
             entrez_id_header=entrez_id_header,
-            log_fold_change_header=log_fold_change_header,
-            adjusted_p_value_header=adjusted_p_value_header,
-            split_char=split_char,
+            log_fold_change_header=log2_fold_change_header,
+            adjusted_p_value_header=adj_p_header,
+            split_char=entrez_delimiter,
             base_mean_header=base_mean_header,
             sep="\t"
         )
     else:
-        raise ValueError(f'Unsupported extension: {gene_expression_file_path}')
+        raise ValueError(f'Unsupported extension: {dge_path}')
 
     if disease_associations_path is not None and current_disease_ids_path is not None:
         current_disease_ids = parsers.parse_disease_ids(current_disease_ids_path)
@@ -83,9 +83,9 @@ def generate_ppi_network(
     # Build an undirected weighted graph with the remaining interactions based on Entrez gene IDs
     network = Network(
         protein_interactions,
-        max_adj_p=maximum_adjusted_p_value,
-        max_l2fc=maximum_log2_fold_change,
-        min_l2fc=minimum_log2_fold_change,
+        max_adj_p=max_adj_p,
+        max_l2fc=max_log2_fold_change,
+        min_l2fc=min_log2_fold_change,
     )
     network.set_up_network(gene_list, disease_associations=disease_associations)
 
