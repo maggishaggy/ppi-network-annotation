@@ -5,7 +5,7 @@
 import logging
 import os
 from collections import defaultdict
-from typing import Iterable, List, Tuple
+from typing import List
 
 import igraph
 import pandas as pd
@@ -127,15 +127,6 @@ def handle_dataframe(
         for _, data in df.iterrows()
         for entrez_id in str(data[entrez_id_name]).split(entrez_delimiter)
     ]
-
-
-def _get_entrez_ids_and_symbols(data: pd.DataFrame, entrez, symbol, split_char) -> Iterable[
-    Tuple[str, str]]:
-    """Return Entrez ids and symbols in two lists.
-
-    :param pandas.DataFrame data: A row with column information from the data frame.
-    :return (list,list): A list containing Entrez ids, and another HGNC symbols.
-    """
 
 
 def parse_gene_list(path: str, graph: Graph, anno_type: str = "name") -> list:

@@ -20,3 +20,6 @@ class Gene:
 
     #: Adjusted p-value
     padj: float = 1.0
+
+    #: Gene symbol (from its species-nomenclature consortium)
+    symbol: str = ''
