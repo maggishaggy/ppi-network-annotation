@@ -6,7 +6,9 @@ import logging
 from typing import Dict, List, Optional
 
 import numpy as np
-from igraph import Graph
+from igraph import Graph, Vertex, VertexSeq
+
+from ppi_network_annotation.model.gene import Gene
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +16,11 @@ logger = logging.getLogger(__name__)
 class Network:
     """Encapsulate a PPI network with differential gene expression and disease association annotation."""
 
-    def __init__(self, ppi_graph: Graph, max_adj_p: float, max_l2fc: float, min_l2fc: float):
+    def __init__(self,
+                 ppi_graph: Graph,
+                 max_adj_p: Optional[float] = None,
+                 max_l2fc: Optional[float] = None,
+                 min_l2fc: Optional[float] = None):
         """Initialize the network object
 
         :param ppi_graph: A graph of protein interactions.
@@ -24,14 +30,14 @@ class Network:
         """
         logger.info("Initializing Network")
 
-        self.max_adj_p = max_adj_p
-        self.max_l2fc = max_l2fc
-        self.min_l2fc = min_l2fc
+        self.max_adj_p = max_adj_p or 0.05
+        self.max_l2fc = max_l2fc or -1.0
+        self.min_l2fc = min_l2fc or +1.0
         self.graph = ppi_graph.copy()  # create deep copy of the graph
 
     def set_up_network(
             self,
-            genes: List,
+            genes: List[Gene],
             gene_filter: bool = False,
             disease_associations: Optional[Dict] = None
     ) -> None:
@@ -57,7 +63,7 @@ class Network:
         irrelevant_genes = self.graph.vs.select(name_notin=relevant_entrez)
         self.graph.delete_vertices(irrelevant_genes)
 
-    def _add_vertex_attributes(self, genes: list, disease_associations: dict = None) -> None:
+    def _add_vertex_attributes(self, genes: List[Gene], disease_associations: Optional[dict] = None) -> None:
         """Add attributes to vertices.
 
         :param genes: A list of genes containing attribute information.
@@ -90,10 +96,10 @@ class Network:
         self.graph.vs["up_regulated"] = False
         self.graph.vs["down_regulated"] = False
 
-    def _add_vertex_attributes_by_genes(self, genes: list) -> None:
+    def _add_vertex_attributes_by_genes(self, genes: List[Gene]) -> None:
         """Assign values to attributes on vertices.
 
-        :param list genes: A list of Gene objects from which values will be extracted.
+        :param genes: A list of Gene objects from which values will be extracted.
         """
         for gene in genes:
             try:
@@ -114,7 +120,7 @@ class Network:
                 if target_id in self.graph.vs["name"]:
                     self.graph.vs.find(name=target_id)["associated_diseases"] = disease_id_list
 
-    def get_upregulated_genes(self):
+    def get_upregulated_genes(self) -> VertexSeq:
         """Get genes that are up-regulated.
 
         :return: Up-regulated genes.
@@ -123,7 +129,7 @@ class Network:
         logger.info(f"No. of up-regulated genes after laying on network: {len(up_regulated)}")
         return up_regulated
 
-    def get_downregulated_genes(self):
+    def get_downregulated_genes(self) -> VertexSeq:
         """Get genes that are down-regulated.
 
         :return: Down-regulated genes.
@@ -132,13 +138,13 @@ class Network:
         logger.info(f"No. of down-regulated genes after laying on network: {len(down_regulated)}")
         return down_regulated
 
-    def _is_significantly_differentiated(self, v):
+    def _is_significantly_differentiated(self, v: Vertex) -> bool:
         return v.attributes()['padj'] < self.max_adj_p
 
-    def _is_upregulated_gene(self, v):
+    def _is_upregulated_gene(self, v: Vertex) -> bool:
         return self._is_significantly_differentiated(v) and v.attributes()['l2fc'] > self.min_l2fc
 
-    def _is_downregulated_gene(self, v):
+    def _is_downregulated_gene(self, v: Vertex) -> bool:
         return self._is_significantly_differentiated(v) and v.attributes()['l2fc'] < self.max_l2fc
 
     def print_summary(self, heading: str) -> None:
@@ -150,7 +156,7 @@ class Network:
         logger.info("Number of nodes: {}".format(len(self.graph.vs)))
         logger.info("Number of edges: {}".format(len(self.graph.es)))
 
-    def get_differentially_expressed_genes(self, diff_type):
+    def get_differentially_expressed_genes(self, diff_type: str) -> VertexSeq:
         """Get the differentially expressed genes based on diff_type.
 
         :param str diff_type: Differential expression type chosen by the user; all, down, or up.
@@ -164,7 +170,7 @@ class Network:
             diff_expr = self.graph.vs.select(diff_expressed_eq=True)
         return diff_expr
 
-    def write_adj_list(self, path):
+    def write_adj_list(self, path: str) -> None:
         adj_list = self.get_adjlist()
 
         with open(path, mode="w") as file:

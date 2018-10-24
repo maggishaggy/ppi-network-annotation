@@ -15,11 +15,11 @@ from igraph import Graph
 logger = logging.getLogger(__name__)
 
 
-def parse_ppi_graph(path: str, min_edge_weight: float = 0.63) -> Graph:
+def parse_ppi_graph(path: str, min_edge_weight: float = 0.0) -> Graph:
     """Build an undirected graph of gene interactions from edgelist file.
 
     :param str path: The path to the edgelist file
-    :param float min_edge_weight: Cutoff to keep/remove the edges, default is 0.63
+    :param float min_edge_weight: Cutoff to keep/remove the edges, default is 0, but could also be 0.63.
     :return Graph: Protein-protein interaction graph
     """
     logger.info("In parse_ppi_graph()")
