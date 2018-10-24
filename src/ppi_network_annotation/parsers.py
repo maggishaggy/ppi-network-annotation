@@ -9,8 +9,9 @@ from typing import Iterable, List, Tuple
 
 import igraph
 import pandas as pd
-from ppi_network_annotation.model.gene import Gene
 from igraph import Graph
+
+from ppi_network_annotation.model.gene import Gene
 
 logger = logging.getLogger(__name__)
 
@@ -36,8 +37,8 @@ def parse_excel(file_path: str,
                 entrez_id_header,
                 log_fold_change_header,
                 adjusted_p_value_header,
-                split_char,
-                base_mean_header=None) -> list:
+                entrez_delimiter,
+                base_mean_header=None) -> List[Gene]:
     """Read an excel file on differential expression values as Gene objects.
 
     :param str file_path: The path to the differential expression file to be parsed.
@@ -48,12 +49,12 @@ def parse_excel(file_path: str,
 
     df = pd.read_excel(file_path)
 
-    return _handle_dataframe(
+    return handle_dataframe(
         df,
         entrez_id_name=entrez_id_header,
-        log_fold_change_name=log_fold_change_header,
+        log2_fold_change_name=log_fold_change_header,
         adjusted_p_value_name=adjusted_p_value_header,
-        split_char=split_char,
+        entrez_delimiter=entrez_delimiter,
         base_mean=base_mean_header,
     )
 
@@ -62,7 +63,7 @@ def parse_csv(file_path: str,
               entrez_id_header,
               log_fold_change_header,
               adjusted_p_value_header,
-              split_char,
+              entrez_delimiter,
               base_mean_header=None,
               sep=",") -> List[Gene]:
     """Read a csv file on differential expression values as Gene objects.
@@ -75,22 +76,22 @@ def parse_csv(file_path: str,
 
     df = pd.read_csv(file_path, sep=sep)
 
-    return _handle_dataframe(
+    return handle_dataframe(
         df,
         entrez_id_name=entrez_id_header,
-        log_fold_change_name=log_fold_change_header,
+        log2_fold_change_name=log_fold_change_header,
         adjusted_p_value_name=adjusted_p_value_header,
-        split_char=split_char,
+        entrez_delimiter=entrez_delimiter,
         base_mean=base_mean_header,
     )
 
 
-def _handle_dataframe(
+def handle_dataframe(
         df: pd.DataFrame,
         entrez_id_name,
-        log_fold_change_name,
+        log2_fold_change_name,
         adjusted_p_value_name,
-        split_char,
+        entrez_delimiter,
         base_mean=None,
 ) -> List[Gene]:
     """Convert data frame on differential expression values as Gene objects.
@@ -106,7 +107,7 @@ def _handle_dataframe(
         df = df[pd.notnull(df[base_mean])]
 
     df = df[pd.notnull(df[entrez_id_name])]
-    df = df[pd.notnull(df[log_fold_change_name])]
+    df = df[pd.notnull(df[log2_fold_change_name])]
     df = df[pd.notnull(df[adjusted_p_value_name])]
 
     try:
@@ -120,11 +121,11 @@ def _handle_dataframe(
     return [
         Gene(
             entrez_id=entrez_id,
-            log2_fold_change=data[log_fold_change_name],
+            log2_fold_change=data[log2_fold_change_name],
             padj=data[adjusted_p_value_name]
         )
         for _, data in df.iterrows()
-        for entrez_id in str(data[entrez_id_name]).split(split_char)
+        for entrez_id in str(data[entrez_id_name]).split(entrez_delimiter)
     ]
 
 

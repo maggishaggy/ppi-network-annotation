@@ -12,8 +12,12 @@ import setuptools
 
 PACKAGES = setuptools.find_packages(where='src')
 META_PATH = os.path.join('src', 'ppi_network_annotation', '__init__.py')
-KEYWORDS = ['Protein-Protein Interaction Network', 'Networks Biology',
-            'Annotated Protein-Protein Interaction Network', 'Differential Gene Expression']
+KEYWORDS = [
+    'Protein-Protein Interaction Network',
+    'Networks Biology',
+    'Annotated Protein-Protein Interaction Network',
+    'Differential Gene Expression',
+]
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Environment :: Console',
@@ -33,27 +37,17 @@ INSTALL_REQUIRES = [
     'openpyxl',
     'python-igraph',
     'click',
-    'jinja2',
+    'dataclasses-json',
 ]
 
 EXTRAS_REQUIRE = {
-
 }
 TESTS_REQUIRE = [
-
 ]
 ENTRY_POINTS = {
-    'console_scripts': [
-        # 'ppi_network_annotation = ppi_network_annotation.cli:main',
-    ]
 }
 DEPENDENCY_LINKS = [
-
 ]
-
-PACKAGE_DATA = {
-    '': []
-}
 
 #################################################################
 
@@ -108,6 +102,6 @@ if __name__ == '__main__':
         tests_require=TESTS_REQUIRE,
         entry_points=ENTRY_POINTS,
         dependency_links=DEPENDENCY_LINKS,
-        package_data=PACKAGE_DATA,
         include_package_data=True,
+        zip_safe=False,
     )
