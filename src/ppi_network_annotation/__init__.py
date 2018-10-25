@@ -8,7 +8,7 @@ from ppi_network_annotation.model import LabeledNetwork  # noqa: F401
 from ppi_network_annotation.model import Network  # noqa: F401
 from ppi_network_annotation.pipeline import generate_ppi_network, parse_dge  # noqa: F401
 
-__version__ = '0.0.3-dev'
+__version__ = '0.0.3'
 
 __title__ = 'ppi_network_annotation'
 __description__ = 'Library for annotating a protein protein interaction network with differential ' \
