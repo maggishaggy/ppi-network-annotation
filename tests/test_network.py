@@ -159,35 +159,14 @@ class NetworkTest(unittest.TestCase):
         self.assertEqual(g1.es["weight"], g2.es["weight"])
         for e1 in g1.es:
             has_match = any(
-                (
-                        e1.source == e2.source and
-                        e1.target == e2.target and
-                        e1["weight"] == e2["weight"]
-                )
+                e1.source == e2.source and e1.target == e2.target and e1["weight"] == e2["weight"]
                 for e2 in g2.es
             )
             self.assertTrue(has_match)
 
         for e1 in g2.es:
             has_match = any(
-                (
-                        e1.source == e2.source and
-                        e1.target == e2.target and
-                        e1["weight"] == e2["weight"]
-                )
+                e1.source == e2.source and e1.target == e2.target and e1["weight"] == e2["weight"]
                 for e2 in g1.es
             )
             self.assertTrue(has_match)
-
-    def test_get_second_degree_neighbors(self):
-        n = Network(
-            self.interact_network,
-            max_adj_p=0.05,
-            max_l2fc=-1,
-            min_l2fc=1,
-        )
-        n.set_up_network(self.protein_list, gene_filter=True)
-        # neighbors = n.get_second_degree_neighbors(self.mapped_network.vs[0])
-        # # neighbor_indices = set([node.index for node in neighbors])
-        # expected_indices = {0, 3, 1, 2, 4}
-        # self.assertEqual(set(neighbors), expected_indices)

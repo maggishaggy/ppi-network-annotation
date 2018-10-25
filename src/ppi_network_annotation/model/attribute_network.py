@@ -1,5 +1,10 @@
-from collections import defaultdict
+# -*- coding: utf-8 -*-
+
+"""This module contains the class AttributeNetwork."""
+
 import logging
+from collections import defaultdict
+
 from ppi_network_annotation.model.network import Network
 
 logger = logging.getLogger(__name__)
@@ -7,8 +12,9 @@ logger = logging.getLogger(__name__)
 
 class AttributeNetwork:
     """Mimic encapsulation of a bipartite attribute network for Gat2Vec."""
+
     def __init__(self, network: Network):
-        """Initialize the network object
+        """Initialize the network object.
 
         :param network: A PPI network annotated with differential gene expression and disease association.
         """
@@ -40,7 +46,7 @@ class AttributeNetwork:
         return att_mappings
 
     def _add_differential_expression_attributes(self, att_ind_start, att_mappings):
-        """ Add differential expression information to the attribute mapping dictionary.
+        """Add differential expression information to the attribute mapping dictionary.
 
         :param int att_ind_start: Start index for enumerating the attributes.
         :param dict att_mappings: Dictionary of mappings between vertices and enumerated attributes.

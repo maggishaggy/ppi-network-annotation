@@ -1,6 +1,12 @@
+# -*- coding: utf-8 -*-
+
+"""This module contains the class FilteredNetwork."""
+
 import logging
+
 import numpy as np
 from igraph import Graph
+
 from ppi_network_annotation.model.network import Network
 
 logger = logging.getLogger(__name__)
@@ -8,8 +14,9 @@ logger = logging.getLogger(__name__)
 
 class FilteredNetwork:
     """Mimic encapsulation of filtered PPI networks."""
+
     def __init__(self, network: Network):
-        """Initialize the network object
+        """Initialize the network object.
 
         :param network: A PPI network annotated with differential gene expression
         """

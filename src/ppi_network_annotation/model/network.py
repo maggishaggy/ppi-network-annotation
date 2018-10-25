@@ -21,7 +21,7 @@ class Network:
                  max_adj_p: Optional[float] = None,
                  max_l2fc: Optional[float] = None,
                  min_l2fc: Optional[float] = None):
-        """Initialize the network object
+        """Initialize the network object.
 
         :param ppi_graph: A graph of protein interactions.
         :param max_adj_p: Maximum value for adjusted p-value, used for calculating differential expression
@@ -63,7 +63,8 @@ class Network:
         irrelevant_genes = self.graph.vs.select(name_notin=relevant_entrez)
         self.graph.delete_vertices(irrelevant_genes)
 
-    def _add_vertex_attributes(self, genes: List[Gene], disease_associations: Optional[dict] = None) -> None:
+    def _add_vertex_attributes(self, genes: List[Gene],
+                               disease_associations: Optional[dict] = None) -> None:
         """Add attributes to vertices.
 
         :param genes: A list of genes containing attribute information.
@@ -171,6 +172,10 @@ class Network:
         return diff_expr
 
     def write_adj_list(self, path: str) -> None:
+        """Write the network as an adjacency list to a file.
+
+        :param path: File path to write the adjacency list.
+        """
         adj_list = self.get_adjlist()
 
         with open(path, mode="w") as file:
@@ -178,7 +183,17 @@ class Network:
                 print(i, *line, file=file)
 
     def get_adjlist(self) -> List[List[int]]:
+        """Get the adjacency list of the network.
+
+        :return: Adjacency list of the network.
+        """
         return self.graph.get_adjlist()
 
     def get_attribute_from_indices(self, indices: list, attribute_name: str):
+        """Get attribute values for the requested indices.
+
+        :param indices: Indices of vertices for which the attribute values are requested.
+        :param attribute_name: The name of the attribute.
+        :return: A list of attribute values for the requested indices.
+        """
         return list(np.array(self.graph.vs[attribute_name])[indices])

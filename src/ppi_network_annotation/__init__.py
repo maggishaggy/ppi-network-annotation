@@ -1,13 +1,12 @@
-"""Library for annotating a protein protein interaction network with differential gene 
-expression."""
+"""Library for annotating a protein protein interaction network with differential gene expression."""
 
-from ppi_network_annotation.model import AttributeNetwork
-from ppi_network_annotation.model import FilteredNetwork
-from ppi_network_annotation.model import Gene
-from ppi_network_annotation.model import LabeledNetwork
-from ppi_network_annotation.model import Network
-from ppi_network_annotation.pipeline import generate_ppi_network, parse_dge
-from ppi_network_annotation.constants import get_version
+from ppi_network_annotation.constants import get_version  # noqa: F401
+from ppi_network_annotation.model import AttributeNetwork  # noqa: F401
+from ppi_network_annotation.model import FilteredNetwork  # noqa: F401
+from ppi_network_annotation.model import Gene  # noqa: F401
+from ppi_network_annotation.model import LabeledNetwork  # noqa: F401
+from ppi_network_annotation.model import Network  # noqa: F401
+from ppi_network_annotation.pipeline import generate_ppi_network, parse_dge  # noqa: F401
 
 __version__ = '0.0.3-dev'
 

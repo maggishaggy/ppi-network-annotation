@@ -110,13 +110,13 @@ def handle_dataframe(
     df = df[pd.notnull(df[log2_fold_change_name])]
     df = df[pd.notnull(df[adjusted_p_value_name])]
 
-    try:
-        import bio2bel_hgnc
-    except ImportError:
-        logger.debug('skipping mapping')
-    else:
-        manager = bio2bel_hgnc.Manager()
-        # TODO @cthoyt
+    # try:
+    #     import bio2bel_hgnc
+    # except ImportError:
+    #     logger.debug('skipping mapping')
+    # else:
+    #     manager = bio2bel_hgnc.Manager()
+    #     # TODO @cthoyt
 
     return [
         Gene(

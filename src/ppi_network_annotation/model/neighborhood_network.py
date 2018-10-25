@@ -1,5 +1,11 @@
+# -*- coding: utf-8 -*-
+
+"""This module contains the class NeighborhoodNetwork."""
+
 import logging
+
 from igraph import Graph
+
 from ppi_network_annotation.model.network import Network
 
 logger = logging.getLogger(__name__)
@@ -7,8 +13,9 @@ logger = logging.getLogger(__name__)
 
 class NeighborhoodNetwork:
     """Mimic encapsulation of a neighborhood network."""
+
     def __init__(self, network: Network):
-        """Initialize the network object
+        """Initialize the network object.
 
         :param network: A PPI network
         """
@@ -42,7 +49,7 @@ class NeighborhoodNetwork:
         return list(names)
 
     def get_neighborhood_overlap(self, node1, node2, connection_type=None):
-        """ Get the intersection of two nodes's neighborhoods.
+        """Get the intersection of two nodes's neighborhoods.
 
         Neighborhood is defined by parameter connection_type.
         :param Vertex node1: First node.

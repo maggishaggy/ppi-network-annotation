@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Functions to easily set up the network."""
+
 import logging
 from typing import List, Optional
 
@@ -60,6 +62,16 @@ def parse_dge(
         entrez_delimiter: str,
         base_mean_header: Optional[str] = None
 ) -> List[Gene]:
+    """Parse a differential expression file.
+
+    :param dge_path: Path to the file.
+    :param entrez_id_header: Header for the Entrez identifier column
+    :param log2_fold_change_header: Header for the log2 fold change column
+    :param adj_p_header: Header for the adjusted p-value column
+    :param entrez_delimiter: Delimiter between Entrez ids.
+    :param base_mean_header: Header for the base mean column.
+    :return: A list of genes.
+    """
     if dge_path.endswith('.xlsx'):
         return parsers.parse_excel(
             dge_path,
