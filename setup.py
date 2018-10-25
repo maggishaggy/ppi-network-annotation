@@ -37,6 +37,7 @@ INSTALL_REQUIRES = [
     'python-igraph',
     'click',
     'dataclasses-json',
+    'pandas',
 ]
 
 EXTRAS_REQUIRE = {
