@@ -4,29 +4,38 @@
 
 import unittest
 
+import numpy as np
+from igraph import Graph
+
 from ppi_network_annotation.model.filtered_network import FilteredNetwork
 from ppi_network_annotation.model.gene import Gene
 from ppi_network_annotation.model.network import Network
-from igraph import Graph
-import numpy as np
 
 
 class NetworkTest(unittest.TestCase):
     """Class to test network module."""
 
-    def __init__(self, *args, **kwargs):
+    def setUp(self):
         """Initialize two dummy graphs and a list of genes for the test."""
-        super(NetworkTest, self).__init__(*args, **kwargs)
-
         self.interact_network = Graph()
         self.interact_network.add_vertices(11)
-        self.interact_network.vs["name"] = [str(0), str(1), str(2), str(3),
-                                            str(4), str(5), str(6), str(7),
-                                            str(8),
-                                            str(9), str(10)]
-        self.interact_network.add_edges(
-            [(0, 0), (0, 1), (0, 3), (1, 2), (1, 3), (2, 6), (3, 4), (4, 4),
-             (4, 5), (9, 10)])
+        self.interact_network.vs["name"] = [
+            str(0), str(1), str(2), str(3),
+            str(4), str(5), str(6), str(7),
+            str(8), str(9), str(10)
+        ]
+        self.interact_network.add_edges([
+            (0, 0),
+            (0, 1),
+            (0, 3),
+            (1, 2),
+            (1, 3),
+            (2, 6),
+            (3, 4),
+            (4, 4),
+            (4, 5),
+            (9, 10),
+        ])
         self.interact_network.es["weight"] = [0.9, 0.9, 0.7, 0.7, 0.9, 0.7, 0.9,
                                               0.9, 0.7, 0.9]
 
@@ -55,35 +64,39 @@ class NetworkTest(unittest.TestCase):
         self.mapped_network.es["weight"] = [0.9, 0.9, 0.7, 0.7, 0.9, 0.7, 0.9,
                                             0.9, 0.7]
 
-        self.protein_list = []
-        for i in range(9):
-            p = Gene(entrez_id=str(i), log2_fold_change=self.l2fcs[i],
-                     symbol=self.symbols[i], padj=self.padjs[i])
-            self.protein_list.append(p)
+        self.protein_list = [
+            Gene(
+                entrez_id=str(i),
+                log2_fold_change=self.l2fcs[i],
+                symbol=self.symbols[i],
+                padj=self.padjs[i],
+            )
+            for i in range(9)
+        ]
 
     def test_init(self):
         """Test the constructor and set_up methods."""
-        print("+test_init")
-        n = Network(self.interact_network,
-                    max_adj_p=0.05,
-                    max_l2fc=-1,
-                    min_l2fc=1
-                    )
+        n = Network(
+            self.interact_network,
+            max_adj_p=0.05,
+            max_l2fc=-1,
+            min_l2fc=1,
+        )
         n.set_up_network(self.protein_list, gene_filter=True)
         self.__check_for_graph_eq(n.graph, self.mapped_network)
 
     def test_get_upregulated_genes_network(self):
         """Test the method to get upregulated genes network."""
-        print("+test_get_upregulated_genes_network")
         de_up = self.mapped_network.copy()
         de_up.delete_vertices([1, 2, 4, 5, 6, 7, 8])
         de_up.delete_vertices(de_up.vs.select(_degree_eq=0))
 
-        n = Network(self.interact_network,
-                    max_adj_p=0.05,
-                    max_l2fc=-1,
-                    min_l2fc=1
-                    )
+        n = Network(
+            self.interact_network,
+            max_adj_p=0.05,
+            max_l2fc=-1,
+            min_l2fc=1,
+        )
         n.set_up_network(self.protein_list)
 
         fn = FilteredNetwork(n)
@@ -92,16 +105,16 @@ class NetworkTest(unittest.TestCase):
 
     def test_get_downregulated_genes_network(self):
         """Test the method to get downregulated genes network."""
-        print("+test_get_downregulated_genes_network")
         de_down = self.mapped_network.copy()
         de_down.delete_vertices([0, 1, 2, 3, 4, 6, 7, 8])
         de_down.delete_vertices(de_down.vs.select(_degree_eq=0))
 
-        n = Network(self.interact_network,
-                    max_adj_p=0.05,
-                    max_l2fc=-1,
-                    min_l2fc=1
-                    )
+        n = Network(
+            self.interact_network,
+            max_adj_p=0.05,
+            max_l2fc=-1,
+            min_l2fc=1,
+        )
         n.set_up_network(self.protein_list)
 
         fn = FilteredNetwork(n)
@@ -110,7 +123,6 @@ class NetworkTest(unittest.TestCase):
 
     def test_get_shortest_paths_graph(self):
         """Test method to get shortest paths graph."""
-        print("+test_get_shortest_paths_graph")
         shortest_path_graph = self.mapped_network.copy()
         shortest_path_graph.delete_vertices([2, 6, 7, 8])
         shortest_path_graph.simplify(combine_edges=max)
@@ -121,11 +133,12 @@ class NetworkTest(unittest.TestCase):
         weights = list(1 - np.array(shortest_path_graph.es['weight']))
         shortest_path_graph.es['weight'] = weights
 
-        n = Network(self.interact_network,
-                    max_adj_p=0.05,
-                    max_l2fc=-1,
-                    min_l2fc=1
-                    )
+        n = Network(
+            self.interact_network,
+            max_adj_p=0.05,
+            max_l2fc=-1,
+            min_l2fc=1,
+        )
         n.set_up_network(self.protein_list)
 
         fn = FilteredNetwork(n)
@@ -145,36 +158,34 @@ class NetworkTest(unittest.TestCase):
 
         self.assertEqual(g1.es["weight"], g2.es["weight"])
         for e1 in g1.es:
-            has_match = False
-            print("{} <-> {}".format(e1.source, e1.target))
-            for e2 in g2.es:
-                if (
+            has_match = any(
+                (
                         e1.source == e2.source and
                         e1.target == e2.target and
                         e1["weight"] == e2["weight"]
-                ):
-                    has_match = True
-            self.assertEqual(has_match, True)
+                )
+                for e2 in g2.es
+            )
+            self.assertTrue(has_match)
 
-        print()
         for e1 in g2.es:
-            has_match = False
-            print("{} <-> {}".format(e1.source, e1.target))
-            for e2 in g1.es:
-                if (
+            has_match = any(
+                (
                         e1.source == e2.source and
                         e1.target == e2.target and
                         e1["weight"] == e2["weight"]
-                ):
-                    has_match = True
-            self.assertEqual(has_match, True)
+                )
+                for e2 in g1.es
+            )
+            self.assertTrue(has_match)
 
     def test_get_second_degree_neighbors(self):
-        n = Network(self.interact_network,
-                    max_adj_p=0.05,
-                    max_l2fc=-1,
-                    min_l2fc=1
-                    )
+        n = Network(
+            self.interact_network,
+            max_adj_p=0.05,
+            max_l2fc=-1,
+            min_l2fc=1,
+        )
         n.set_up_network(self.protein_list, gene_filter=True)
         # neighbors = n.get_second_degree_neighbors(self.mapped_network.vs[0])
         # # neighbor_indices = set([node.index for node in neighbors])
