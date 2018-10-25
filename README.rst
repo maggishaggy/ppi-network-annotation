@@ -1,19 +1,10 @@
-PPI Network Annotation
-===================
-OVERVIEW
---------
-Library for annotating a protein-protein interaction network using differentially expressed gene
+Protein-Protein Interaction (PPI) Network Annotation |build|
+============================================================
+A library for annotating a protein-protein interaction network using differentially expressed gene
 information
 
-SOFTWARE REQUIREMENTS
----------------------
-The software requirements to run the program are:
-
-1. Ubuntu (>=16.04). You can try other OS, but they are not supported
-
-2. Python (>=3.7)
-
-3. All Python libraries specified under requirements.txt
+.. |build| image:: https://travis-ci.com/GuiltyTargets/ppi-network-annotation.svg?branch=master
+    :target: https://travis-ci.com/GuiltyTargets/ppi-network-annotation
 
 INPUT FILES
 -----------
@@ -51,7 +42,3 @@ There are 4 files which are necessary to run this program:
 
     The file may contain other columns too, but the indices and names of the above columns must
     be entered as parameters
-
-
-HOW TO RUN
-----------
